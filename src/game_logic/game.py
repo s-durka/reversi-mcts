@@ -16,11 +16,12 @@ class Game:
         self.current_player = -self.current_player
     
     def _is_game_over(self) -> bool:
-        if all(self.board.board[i][j] != EMPTY for i,j in range(Board.BOARD_SIZE)):
+        if all(self.board.board[i][j] != EMPTY for i in range(Board.BOARD_SIZE) for j in range(Board.BOARD_SIZE)):
             return True 
-        for i,j in range(Board.BOARD_SIZE):
-            if self._is_valid_move(i,j):
-                return False   
+        for i in range(Board.BOARD_SIZE):
+            for j in range(Board.BOARD_SIZE):
+                if self._is_valid_move(i,j):
+                    return False   
         return True
             
     def _is_valid_move(self, row, col) -> bool:
@@ -28,7 +29,7 @@ class Game:
         if board[row][col] is not EMPTY:
             return False
         
-        opponent_color = self.current_player
+        opponent_color = -self.current_player
         for direction_row in [-1, 0, 1]:
             for direction_col in [-1, 0 , 1]:
                 if direction_col == 0 and direction_row == 0:
@@ -57,7 +58,7 @@ class Game:
         opponenct_color = -self.current_player
         flip_list = []
         
-        board[row, col] = self.current_player
+        board[row][col] = self.current_player
         
         for direction_row in [-1, 0, 1]:
             for direction_col in [-1, 0, 1]:
