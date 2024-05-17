@@ -12,6 +12,13 @@ class Game:
         self.current_player = BLACK
         self.game_over = False
         
+    def copy(self):
+        copied_game = Game()
+        copied_game.board = self.board.copy()
+        copied_game.current_player = self.current_player
+        copied_game.game_over = self.game_over
+        return copied_game
+        
     def _switch_player(self) -> None:
         self.current_player = -self.current_player
     
@@ -24,7 +31,7 @@ class Game:
                     return False   
         return True
             
-    def _is_valid_move(self, row, col) -> bool:
+    def is_valid_move(self, row, col) -> bool:
         board = self.board.board
         if board[row][col] is not EMPTY:
             return False
@@ -75,6 +82,16 @@ class Game:
         self._switch_player()
         self.game_over = self._is_game_over()
         return True
+    
+    def evaluate_board(self):
+        score = 0
+        for row in self.board.board:
+            for cell in row:
+                if cell == self.current_player:
+                    score += 1
+                elif cell == -self.current_player:
+                    score -= 1
+        return score
     
     def print_board(self):
         self.board.print_board()
