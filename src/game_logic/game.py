@@ -22,12 +22,12 @@ class Game:
     def _switch_player(self) -> None:
         self.current_player = -self.current_player
     
-    def _is_game_over(self) -> bool:
+    def is_game_over(self) -> bool:
         if all(self.board.board[i][j] != EMPTY for i in range(Board.BOARD_SIZE) for j in range(Board.BOARD_SIZE)):
             return True 
         for i in range(Board.BOARD_SIZE):
             for j in range(Board.BOARD_SIZE):
-                if self._is_valid_move(i,j):
+                if self.is_valid_move(i,j):
                     return False   
         return True
             
@@ -58,11 +58,11 @@ class Game:
         return False
         
     def make_move(self, row, col) -> bool:
-        if not self._is_valid_move(row, col):
+        if not self.is_valid_move(row, col):
             return False
         
         board = self.board.board
-        opponenct_color = -self.current_player
+        opponent_color = -self.current_player
         flip_list = []
         
         board[row][col] = self.current_player
@@ -71,16 +71,19 @@ class Game:
             for direction_col in [-1, 0, 1]:
                 if direction_col == 0 and direction_row == 0:
                     continue # It's the same field - skip
+                potential_flips = []
                 r, c = row + direction_row, col + direction_col
-                while (0 <= r < Board.BOARD_SIZE and 0 <= c < Board.BOARD_SIZE) and board[r][c] == opponenct_color:
-                    flip_list.append((r,c))
+                while (0 < r <= Board.BOARD_SIZE and 0 < c <= Board.BOARD_SIZE) and board[r][c] == opponent_color:
+                    potential_flips.append((r,c))
                     r += direction_row
                     c += direction_col
+                if board[r][c] == self.current_player:
+                    flip_list.extend(potential_flips) # Only flip if there is a piece to close the line       
         for flip_row, flip_col in flip_list:
             board[flip_row][flip_col] = self.current_player
             
         self._switch_player()
-        self.game_over = self._is_game_over()
+        self.game_over = self.is_game_over()
         return True
     
     def evaluate_board(self):
