@@ -38,3 +38,15 @@ class Minimax:
                 if beta <= alpha:
                     break
             return min_eval
+        
+    def best_move(self, game, depth):
+        best_eval = float('-inf')
+        best_move = None
+        for move in [(r, c) for r in range(Board.BOARD_SIZE) for c in range(Board.BOARD_SIZE) if game.is_valid_move(r, c)]:
+            new_game = game.copy()
+            new_game.make_move(*move)
+            move_eval = self.minimax(new_game, depth - 1, float('-inf'), float('inf'), False)
+            if move_eval > best_eval:
+                best_eval = move_eval
+                best_move = move
+        return best_move

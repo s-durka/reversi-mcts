@@ -49,7 +49,7 @@ class Game:
                     while True:
                         r += direction_row
                         c += direction_col
-                        if not (0 <= r < Board.BOARD_SIZE and 0 <= c < Board.BOARD_SIZE):
+                        if not self.board.is_in_range(r,c):
                             break # Out of board 
                         if board[r][c] == EMPTY:
                             break # Empty field on the other side - invalid move
@@ -73,7 +73,10 @@ class Game:
                     continue # It's the same field - skip
                 potential_flips = []
                 r, c = row + direction_row, col + direction_col
-                while (0 < r <= Board.BOARD_SIZE and 0 < c <= Board.BOARD_SIZE) and board[r][c] == opponent_color:
+                if not self.board.is_in_range(r,c):
+                    continue
+                # todo: define out of range check for future move. Check while basing on this check.
+                while (self.board.is_in_range(r + direction_row, c + direction_col)) and board[r][c] == opponent_color:
                     potential_flips.append((r,c))
                     r += direction_row
                     c += direction_col
