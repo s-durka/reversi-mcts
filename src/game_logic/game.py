@@ -103,5 +103,11 @@ class Game:
             return "WHITE" if self.board.white_count() > self.board.black_count() else "BLACK"
         return None
     
+    def get_black_count(self) -> int:
+        return self.board.black_count()
+    
+    def get_white_count(self) -> int:
+        return self.board.white_count()
+    
     def print_board(self):
         self.board.print_board()

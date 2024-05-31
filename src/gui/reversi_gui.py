@@ -18,8 +18,19 @@ class ReversiGUI:
         self.canvas_size = 600
         self.cell_size = self.canvas_size // 8
 
-        self.canvas = tk.Canvas(self.root, width=self.canvas_size, height=self.canvas_size, bg='green')
-        self.canvas.pack()
+        # Create a frame to hold the piece count and game board
+        self.frame = tk.Frame(self.root)
+        self.frame.pack()
+
+        # Add labels to show the piece count
+        self.black_label = tk.Label(self.frame, text=f"Black: {self.game.get_black_count()}", font=("Helvetica", 14))
+        self.black_label.grid(row=0, column=0, padx=(20, 0), pady=10, sticky='w')
+
+        self.white_label = tk.Label(self.frame, text=f"White: {self.game.get_white_count()}", font=("Helvetica", 14))
+        self.white_label.grid(row=0, column=1, padx=(0, 20), pady=10, sticky='e')
+
+        self.canvas = tk.Canvas(self.frame, width=self.canvas_size, height=self.canvas_size, bg='green')
+        self.canvas.grid(row=1, column=0, columnspan=2)
 
         self.canvas.bind("<Button-1>", self.click_handler)
 
@@ -64,7 +75,7 @@ class ReversiGUI:
                 y1 = row * self.cell_size
                 x2 = x1 + self.cell_size
                 y2 = y1 + self.cell_size
-                self.canvas.create_rectangle(x1, y1, x2, y2, outline='black')
+                self.canvas.create_rectangle(x1, y1, x2, y2, outline='black', fill='#005000')
 
                 piece = self.game.board.board[row][col]
                 if piece == BLACK:
@@ -72,9 +83,29 @@ class ReversiGUI:
                 elif piece == WHITE:
                     self.draw_piece(row, col, 'white')
 
+        self.black_label.config(text=f"Black: {self.game.get_black_count()}")
+        self.white_label.config(text=f"White: {self.game.get_white_count()}")
+
         if self.game.game_over:
-            winner = self.game.get_winner()
-            messagebox.showinfo("Game Over", f"Game Over! Winner: {winner}")
+            self.show_winner_message()
+    
+    def show_winner_message(self, winner):
+        # Calculate dimensions for the message box
+        box_width = self.canvas_size * 0.8
+        box_height = 100
+        box_x1 = (self.canvas_size - box_width) / 2
+        box_y1 = (self.canvas_size - box_height) / 2
+        box_x2 = box_x1 + box_width
+        box_y2 = box_y1 + box_height
+
+        # Darken the game board
+        self.canvas.create_rectangle(0, 0, self.canvas_size, self.canvas_size, fill='black', stipple='gray50')
+
+        # Draw the main message box with opacity
+        self.canvas.create_rectangle(box_x1, box_y1, box_x2, box_y2, fill='black', outline='black')
+
+        # Draw the winner text
+        self.canvas.create_text(self.canvas_size / 2, (self.canvas_size / 2), text=f"Winner: {winner}", font=("Helvetica", 20, "bold"), fill="white")
 
     def draw_piece(self, row, col, color):
         x1 = col * self.cell_size + 5
