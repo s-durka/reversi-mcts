@@ -75,7 +75,6 @@ class Game:
                 r, c = row + direction_row, col + direction_col
                 if not self.board.is_in_range(r,c):
                     continue
-                # todo: define out of range check for future move. Check while basing on this check.
                 while (self.board.is_in_range(r + direction_row, c + direction_col)) and board[r][c] == opponent_color:
                     potential_flips.append((r,c))
                     r += direction_row
@@ -98,6 +97,17 @@ class Game:
                 elif cell == -self.current_player:
                     score -= 1
         return score
+    
+    def get_winner(self) -> str:
+        if self.game_over:
+            return "WHITE" if self.board.white_count() > self.board.black_count() else "BLACK"
+        return None
+    
+    def get_black_count(self) -> int:
+        return self.board.black_count()
+    
+    def get_white_count(self) -> int:
+        return self.board.white_count()
     
     def print_board(self):
         self.board.print_board()

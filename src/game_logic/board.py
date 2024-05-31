@@ -27,5 +27,12 @@ class Board:
                 else:
                     print('.', end=' ')
             print()
+            
+    def black_count(self) -> int:
+        return sum(row.count(BLACK) for row in self.board)
+
+    def white_count(self) -> int:
+        return sum(row.count(WHITE) for row in self.board)
+            
     def is_in_range(self, row, column) -> bool:
-        return 0 < row < self.BOARD_SIZE and 0 < column < self.BOARD_SIZE
+        return 0 <= row < self.BOARD_SIZE and 0 <= column < self.BOARD_SIZE
