@@ -19,6 +19,9 @@ class Game:
         copied_game.game_over = self.game_over
         return copied_game
         
+    def get_legal_moves(self):
+        return [(r, c) for r in range(Board.BOARD_SIZE) for c in range(Board.BOARD_SIZE) if self.is_valid_move(r, c)]
+
     def _switch_player(self) -> None:
         self.current_player = -self.current_player
     
@@ -102,6 +105,11 @@ class Game:
         if self.game_over:
             return "WHITE" if self.board.white_count() > self.board.black_count() else "BLACK"
         return None
+    
+    def get_winner_int(self) -> int:
+        if self.game_over:
+            return WHITE if self.board.white_count() > self.board.black_count() else BLACK
+        return EMPTY
     
     def get_black_count(self) -> int:
         return self.board.black_count()
