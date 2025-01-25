@@ -1,4 +1,5 @@
 from game_logic.constants import *
+
 class Board:
     
     BOARD_SIZE = 8
