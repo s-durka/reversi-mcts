@@ -1,19 +1,19 @@
 import tkinter as tk
-from tkinter import messagebox
 from game_logic.constants import *
 from game_logic.game import Game
-from game_logic.board import Board
+from ai_agents.mcts import MCTS
 from ai_agents.minmax import Minimax
 
 class ReversiGUI:
-    def __init__(self, root, agent='human', depth=5):
+    def __init__(self, root, minimax_depth, agent='human'):
         self.root = root
         self.root.title("Reversi (Othello)")
 
         self.game = Game()
-        self.minimax = Minimax(self.game)
         self.agent = agent
-        self.depth = depth
+
+        self.minimax = Minimax(self.game, minimax_depth)
+
 
         self.canvas_size = 600
         self.cell_size = self.canvas_size // 8
@@ -61,11 +61,16 @@ class ReversiGUI:
             print("Invalid move. Try again.")
 
     def ai_move(self):
-        if self.agent == 'minimax' and self.game.current_player == WHITE:
-            move = self.minimax.best_move(self.game, self.depth)
+        if self.game.current_player == WHITE:
+            move = None
+            if self.agent == 'mcts':
+                mcts = MCTS(self.game)
+                move = mcts.move()
+            elif self.agent == 'minimax':
+                move = self.minimax.best_move(self.game)
             if move:
-                self.game.make_move(*move)
-                self.update_board()
+                    self.game.make_move(*move)
+                    self.update_board()
 
     def update_board(self):
         self.canvas.delete("all")
@@ -89,7 +94,7 @@ class ReversiGUI:
         if self.game.game_over:
             self.show_winner_message()
     
-    def show_winner_message(self, winner):
+    def show_winner_message(self):
         # Calculate dimensions for the message box
         box_width = self.canvas_size * 0.8
         box_height = 100
@@ -105,7 +110,7 @@ class ReversiGUI:
         self.canvas.create_rectangle(box_x1, box_y1, box_x2, box_y2, fill='black', outline='black')
 
         # Draw the winner text
-        self.canvas.create_text(self.canvas_size / 2, (self.canvas_size / 2), text=f"Winner: {winner}", font=("Helvetica", 20, "bold"), fill="white")
+        self.canvas.create_text(self.canvas_size / 2, (self.canvas_size / 2), text=f"Winner: {self.game.get_winner()}", font=("Helvetica", 20, "bold"), fill="white")
 
     def draw_piece(self, row, col, color):
         x1 = col * self.cell_size + 5

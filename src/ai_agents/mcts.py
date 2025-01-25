@@ -59,11 +59,13 @@ class Node:
         return child_node
 
 class MCTS:
-    def __init__(self, state: GameState):
+    def __init__(self, state: GameState, iters=1000):
         self.root = Node(state)
+        self.iters = iters
 
-    def __init__(self, game: Game):
+    def __init__(self, game: Game, iters=1000):
         self.root = Node(GameState(game))
+        self.iters = iters
 
     def select(self, node: Node):
         while not node.state.is_terminal() and node.is_fully_expanded():
@@ -93,7 +95,7 @@ class MCTS:
             node = node.parent
 
     def move(self):
-        for _ in range(1000):  # You can adjust the number of iterations
+        for _ in range(self.iters):
             leaf = self.select(self.root)
             child = self.expand(leaf)
             result = self.simulate(child)

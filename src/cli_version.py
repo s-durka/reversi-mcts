@@ -12,7 +12,7 @@ def main_no_gui():
     args = parser.parse_args()
 
     game = Game()
-    minimax = Minimax(game)
+    minimax = Minimax(game, args.depth)
     while not game.game_over:
         game.print_board()
         if game.current_player == BLACK:
@@ -28,7 +28,7 @@ def main_no_gui():
                     print("Invalid move. Try again.")
             elif args.agent == 'minimax':
                 print("White's turn (AI)")
-                move = minimax.best_move(game, args.depth)
+                move = minimax.best_move(game)
                 if move:
                     game.make_move(*move)
             elif args.agent == 'mcts':
@@ -42,4 +42,4 @@ def main_no_gui():
     print("Game over!")
 
 # if __name__ == "__main__":
-#     main()
+#     main_no_gui()

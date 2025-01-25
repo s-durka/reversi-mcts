@@ -2,7 +2,6 @@ from game_logic.board import Board
 from game_logic.constants import *
 
 class Game:
-    
     board: Board
     current_player: int
     game_over: bool
@@ -82,7 +81,7 @@ class Game:
                     potential_flips.append((r,c))
                     r += direction_row
                     c += direction_col
-                if board[r][c] == self.current_player:
+                if self.board.is_in_range(r, c) and board[r][c] == self.current_player:
                     flip_list.extend(potential_flips) # Only flip if there is a piece to close the line       
         for flip_row, flip_col in flip_list:
             board[flip_row][flip_col] = self.current_player
